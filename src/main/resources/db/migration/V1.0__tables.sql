@@ -52,5 +52,7 @@ create table if not exists work_order_request (
     request_type            varchar         NULL,
     department              varchar         NULL,
     status                  varchar         NOT NULL,
+    request                 varchar         NOT NULL,
+    error_messages          varchar         NOT NULL,
     CONSTRAINT work_order_request_pkey PRIMARY KEY (id)
 );

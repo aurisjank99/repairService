@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -29,7 +30,6 @@ public class RequestParts {
 
     @Column(name = "name")
     private String name;
-
 
     @Column(name = "count")
     private Long count;

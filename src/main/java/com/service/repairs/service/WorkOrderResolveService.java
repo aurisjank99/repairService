@@ -6,28 +6,36 @@ import com.service.repairs.domain.DepartmentType;
 import com.service.repairs.domain.RepairRequest;
 import com.service.repairs.domain.ReplacementRequest;
 import com.service.repairs.domain.Request;
-import com.service.repairs.domain.repository.RequestRepository;
+import com.service.repairs.domain.WorkOrderRequest;
+import com.service.repairs.domain.repository.WorkOrderRequestRepository;
 import com.service.repairs.dto.AnalysisRequestDto;
 import com.service.repairs.dto.RepairRequestDto;
 import com.service.repairs.dto.ReplacementRequestDto;
+import com.service.repairs.dto.RequestDto;
 import com.service.repairs.exception.BaseException;
 import com.service.repairs.utils.StringBuilderPlus;
+import com.service.repairs.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class WorkOrderResolveService {
     private final DepartmentService departmentService;
     private final RequestService requestService;
+    private final WorkOrderRequestRepository workOrderRequestRepository;
 
     public String createAnalysisRequest(AnalysisRequestDto request) {
         StringBuilderPlus errorMessages = new StringBuilderPlus();
         Optional<Department> department = getDepartment(request.getDepartment(), errorMessages);
         validateRequestedDepartment(department, request.getType(), DepartmentType.ANALYSIS, errorMessages);
         requestService.createRequest(new AnalysisRequest(request, department, errorMessages), errorMessages);
+        saveAttemptedRequest(request.getType(), request.getDepartment(), errorMessages, Utils.convertObjectToString(request));
         return getResponse(errorMessages);
     }
 
@@ -36,6 +44,7 @@ public class WorkOrderResolveService {
         Optional<Department> department = getDepartment(request.getDepartment(), errorMessages);
         validateRequestedDepartment(department, request.getType(), DepartmentType.REPAIR, errorMessages);
         requestService.createRequest(new RepairRequest(request, department, errorMessages), errorMessages);
+        saveAttemptedRequest(request.getType(), request.getDepartment(), errorMessages, Utils.convertObjectToString(request));
         return getResponse(errorMessages);
     }
 
@@ -44,7 +53,20 @@ public class WorkOrderResolveService {
         Optional<Department> department = getDepartment(request.getDepartment(), errorMessages);
         validateRequestedDepartment(department, request.getType(), DepartmentType.REPLACEMENT, errorMessages);
         requestService.createRequest(new ReplacementRequest(request, department, errorMessages), errorMessages);
+        saveAttemptedRequest(request.getType(), request.getDepartment(), errorMessages, Utils.convertObjectToString(request));
         return getResponse(errorMessages);
+    }
+
+    public List<Object> getAllRequests() {
+        return requestService.getAll().stream()
+                .map(req -> convertToDtos(req))
+                .collect(Collectors.toList());
+    }
+
+    public List<WorkOrderRequest> getAllRequestsHistory() {
+        List<WorkOrderRequest> requests = new ArrayList<>();
+        workOrderRequestRepository.findAll().forEach(obj -> requests.add(obj));
+        return requests;
     }
 
     private String getResponse(StringBuilderPlus errorMessages) {
@@ -82,5 +104,22 @@ public class WorkOrderResolveService {
                 errorMessages.appendLine("Selected department is not correct type facility");
             }
         }
+    }
+
+    private void saveAttemptedRequest(String requestType, String department, StringBuilderPlus errorMessages, String objectString){
+        workOrderRequestRepository.save(new WorkOrderRequest(requestType, department, errorMessages.toString(), objectString));
+    }
+
+    private <T extends Request, G extends RequestDto> G convertToDtos(T request){
+        if(request instanceof AnalysisRequest){
+            return (G) AnalysisRequestDto.toDto((AnalysisRequest) request);
+        }
+        if(request instanceof RepairRequest){
+            return (G) RepairRequestDto.toDto((RepairRequest) request);
+        }
+        if(request instanceof ReplacementRequest){
+            return (G) ReplacementRequestDto.toDto((ReplacementRequest) request);
+        }
+        return null;
     }
 }

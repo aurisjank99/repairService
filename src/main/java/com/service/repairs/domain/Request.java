@@ -79,7 +79,7 @@ public class Request {
 
     public void addParts(List<PartDto> parts) {
         this.requestParts = parts.stream()
-                .map(part -> new RequestParts(part ,this))
+                .map(part -> new RequestParts(part, this))
                 .collect(Collectors.toList());
     }
 

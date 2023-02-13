@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
+import static com.service.repairs.domain.WorkOrderStatus.NOT_VALID;
+import static com.service.repairs.domain.WorkOrderStatus.VALID;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -38,6 +40,18 @@ public class WorkOrderRequest {
     @Enumerated(EnumType.STRING)
     private WorkOrderStatus status;
 
-    @Column(name = "end_date", updatable = false, nullable = false)
-    private Instant endDate;
+    @Column(name = "error_messages", updatable = false, nullable = false)
+    private String errorMessages;
+
+    @Column(name = "request", updatable = false, nullable = false)
+    private String request;
+
+    public WorkOrderRequest(String requestType, String department, String errorMessages, String objectString) {
+        this.receivedDate = Instant.now();
+        this.requestType = requestType;
+        this.department = department;
+        this.status = errorMessages.isBlank() ? VALID : NOT_VALID;
+        this.errorMessages = errorMessages;
+        this.request = objectString;
+    }
 }

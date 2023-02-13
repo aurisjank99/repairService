@@ -8,22 +8,36 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Entity
 @DiscriminatorValue("REPLACEMENT")
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReplacementRequest extends Request {
+    @Getter
     @OneToOne(mappedBy = "request", cascade = CascadeType.PERSIST)
     RequestDetailsReplacement requestDetails;
 
-    public ReplacementRequest(ReplacementRequestDto replacementRequestDto, Optional<Department> department, StringBuilderPlus errorMessages) {
-        super(replacementRequestDto.getStartDate(), replacementRequestDto.getEndDate(), replacementRequestDto.getCurrency(), replacementRequestDto.getCost(), errorMessages);
+    public ReplacementRequest(ReplacementRequestDto replacementRequestDto,
+                              Optional<Department> department,
+                              StringBuilderPlus errorMessages) {
+        super(replacementRequestDto.getStartDate(),
+                replacementRequestDto.getEndDate(),
+                replacementRequestDto.getCurrency(),
+                replacementRequestDto.getCost(),
+                errorMessages);
         department.ifPresent(this::setDepartment);
         addParts(replacementRequestDto.getParts());
         validate(replacementRequestDto, errorMessages);
-        this.requestDetails = new RequestDetailsReplacement(replacementRequestDto.getFactoryName(), replacementRequestDto.getFactoryOrderNumber(), this);
+        this.requestDetails = new RequestDetailsReplacement(replacementRequestDto.getFactoryName(),
+                replacementRequestDto.getFactoryOrderNumber(), this);
     }
 
     private void validate(ReplacementRequestDto replacementRequestDto, StringBuilderPlus errorMessages) {

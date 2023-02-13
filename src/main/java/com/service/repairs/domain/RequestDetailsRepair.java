@@ -40,10 +40,10 @@ public class RequestDetailsRepair {
     @JoinColumn(name = "request_id", referencedColumnName = "id")
     private Request request;
 
-    public RequestDetailsRepair (LocalDate analysisDate,
-                    LocalDate testDate,
-                    String responsiblePerson,
-                    Request request) {
+    public RequestDetailsRepair(LocalDate analysisDate,
+                                LocalDate testDate,
+                                String responsiblePerson,
+                                Request request) {
         this.analysisDate = Utils.convertLocalDateToInstant(analysisDate);
         this.testDate = Utils.convertLocalDateToInstant(testDate);
         this.responsiblePerson = responsiblePerson;

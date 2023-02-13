@@ -1,4 +1,13 @@
 # Description
+
+-------
+
+Swagger:
+http://localhost:8080/swagger-ui/index.html#/
+or
+http://localhost:8080/
+
+-------
 The role of the service: validation work orders – Analysis, Repair, Replacement. Each work order contains
 collection of parts.
 Technical requirements

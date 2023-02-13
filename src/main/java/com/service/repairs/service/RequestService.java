@@ -3,11 +3,15 @@ package com.service.repairs.service;
 import com.service.repairs.domain.AnalysisRequest;
 import com.service.repairs.domain.RepairRequest;
 import com.service.repairs.domain.ReplacementRequest;
+import com.service.repairs.domain.Request;
 import com.service.repairs.domain.repository.RequestRepository;
 import com.service.repairs.utils.StringBuilderPlus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +40,7 @@ public class RequestService {
         }
     }
 
-//    @Transactional
+    @Transactional
     public void createRequest(ReplacementRequest request, StringBuilderPlus errorMessages) {
         try {
             if (errorMessages.toString().isBlank())
@@ -45,5 +49,11 @@ public class RequestService {
             System.out.println(e.getMessage());
             errorMessages.appendLine("Could not create work order request for replacement");
         }
+    }
+
+    public List<Request> getAll() {
+        List<Request> requests = new ArrayList<>();
+        requestRepository.findAll().forEach(obj -> requests.add(obj));
+        return requests;
     }
 }

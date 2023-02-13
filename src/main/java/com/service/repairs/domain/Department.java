@@ -9,14 +9,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @Entity
 @Table(name = "department")
-@NoArgsConstructor(access = PROTECTED)
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +25,4 @@ public class Department {
     @Column(name = "type", updatable = false, nullable = false)
     @Enumerated(EnumType.STRING)
     private DepartmentType type;
-
 }
