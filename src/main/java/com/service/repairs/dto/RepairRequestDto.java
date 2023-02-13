@@ -3,6 +3,7 @@ package com.service.repairs.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.service.repairs.domain.RepairRequest;
 import com.service.repairs.utils.Utils;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,12 +15,15 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class RepairRequestDto extends RequestDto {
+    @Schema(title = "Analysis date of request", example = "2000-07-01")
     @JsonProperty(value = "analysis_date")
     private LocalDate analysisDate;
 
+    @Schema(title = "Test date of request", example = "2000-07-01")
     @JsonProperty(value = "test_date")
     private LocalDate testDate;
 
+    @Schema(title = "Responsible person", example = "GOoD repairmaster")
     @JsonProperty(value = "responsible_person")
     private String responsiblePerson;
 

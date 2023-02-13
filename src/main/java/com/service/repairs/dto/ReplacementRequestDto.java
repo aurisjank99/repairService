@@ -3,6 +3,7 @@ package com.service.repairs.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.service.repairs.domain.ReplacementRequest;
 import com.service.repairs.utils.Utils;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,9 +18,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReplacementRequestDto extends RequestDto {
+    @Schema(title = "Factory name", example = "GOoDfactory")
     @JsonProperty(value = "factory_name")
     private String factoryName;
 
+    @Schema(title = "Factory order number (10 digits, 2 first alphabetic others numbers)", example = "DE12345678")
     @JsonProperty(value = "factory_order_number")
     private String factoryOrderNumber;
 
@@ -38,7 +41,7 @@ public class ReplacementRequestDto extends RequestDto {
         dto.setCurrency(request.getCost().getCurrency().getCurrencyCode());
         dto.setParts(request.getRequestParts().stream().map(PartDto::toDto).collect(Collectors.toList()));
         dto.setFactoryName(request.getRequestDetails().getFactoryName());
-        dto.setFactoryOrderNumber(request.getRequestDetails().getFactoryName());
+        dto.setFactoryOrderNumber(request.getRequestDetails().getFactoryOrderNumber());
         return dto;
     }
 }
